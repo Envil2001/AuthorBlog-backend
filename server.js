@@ -19,7 +19,13 @@ app.use("/uploads", express.static('uploads'), uploadsRouter);
 
 const start = async () => {
     try {
-        await mongoose.connect(process.env.DB_URL)
+        await mongoose.connect(process.env.DB_URL, {
+            useNewUrlParser: true,
+            poolSize: 20,
+            keepAlive: 300000,
+            reconnectTries: 1000,
+            reconnectInterval: 90000
+        })
             .then(() => console.log('DB OK'))
             .catch(() => console.log('error db'));
 
