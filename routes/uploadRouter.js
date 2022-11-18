@@ -22,7 +22,7 @@ const upload = multer({ storage });
 router.post('/upload', checkAuth, upload.single('image'), async (req, res) => {
     try {
         res.json({
-            url: process.env.REACT_APP_API_URL + req.file.originalname
+            url: req.file.originalname
         });
     } catch (err) {
         console.log(err);
