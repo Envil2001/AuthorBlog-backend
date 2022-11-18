@@ -7,6 +7,9 @@ const multer = require('multer');
 
 const storage = multer.diskStorage({
     destination: (_, __, cb) => {
+        if(!fs.existsSync('uploads')) {
+            fs.mkdirSync('uploads')
+        }
         cb(null, 'uploads');
     },
     filename: (_, file, cb) => {
@@ -17,7 +20,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 router.post('/upload', checkAuth, upload.single('image'), (req, res) => {
     res.json({
-        url: `http://localhost:4444/uploads/${req.file.originalname}`
+        url: process.env.REACT_APP_API_URL + '/' + req.file.originalname
     });
 });
 
