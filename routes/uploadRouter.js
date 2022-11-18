@@ -1,13 +1,14 @@
 const Router = require('express');
 const router = new Router();
 const checkAuth = require('../utils/checkAuth');
+const fs = require("fs")
 
 const multer = require('multer');
 // When the storage will be created, execute the function 
 
 const storage = multer.diskStorage({
     destination: (_, __, cb) => {
-        if(!fs.existsSync('uploads')) {
+        if (!fs.existsSync('uploads')) {
             fs.mkdirSync('uploads')
         }
         cb(null, 'uploads');
@@ -18,10 +19,17 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-router.post('/upload', checkAuth, upload.single('image'), (req, res) => {
-    res.json({
-        url: process.env.REACT_APP_API_URL + '/' + req.file.originalname
-    });
+router.post('/upload', checkAuth, upload.single('image'), async (req, res) => {
+    try {
+        res.json({
+            url: process.env.REACT_APP_API_URL + req.file.originalname
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: 'чот не вышло'
+        });
+    }
 });
 
 module.exports = router;
